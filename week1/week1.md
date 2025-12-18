@@ -4,9 +4,11 @@ Student:   Sohan Giri
 StudentID: A00032373
 Date: 2025/11/05
 1. Introduction
+
 The purpose of Week 1 was to design and plan the system architecture used throughout this coursework. This phase focused on selecting an appropriate Linux server distribution, defining a secure and ethical network configuration, and justifying the workstation environment used for remote administration. Establishing a well-structured architecture at this stage is critical, as it forms the foundation for later security hardening, performance testing, and system evaluation tasks.
 
 2. System Architecture Overview
+
 2.1 Architecture Description
 The system follows a dual-system client–server architecture consisting of a workstation and a server. The workstation is the host PC, which provides the administrative interface for managing the server. The server runs Ubuntu Server LTS in a headless configuration within VirtualBox and does not include a graphical user interface.
 
@@ -20,6 +22,7 @@ Figure 1: Dual-system architecture using a host PC and Ubuntu Server LTS (headle
 The diagram illustrates the separation of responsibilities between the workstation and the server. The workstation initiates SSH connections, runs monitoring scripts, and manages the GitHub Pages technical journal. The Ubuntu Server accepts SSH connections, runs Linux services, and enforces security controls. Both systems communicate through an isolated VirtualBox virtual network.
 
 3. Distribution Selection and Justification
+
 3.1 Selected Server Distribution
 Chosen Distribution: Ubuntu Server LTS
 Ubuntu Server LTS was selected as the server operating system due to its strong balance of stability, security, and long-term support. The Long-Term Support (LTS) release model provides five years of security updates and maintenance, making it suitable for production-style environments.
@@ -80,6 +83,7 @@ Command: lsb_release -a
 ![lsb_release output](../images/week1/lsb.png)
 The lsb_release -a command was used to display detailed information about the Linux distribution running on the server. The output confirms that the system is running Ubuntu 24.04.3 LTS.
 Using a Long-Term Support (LTS) release ensures extended security updates and system stability, which is essential for server environments. This version information is also important when referencing official documentation, applying security updates, and evaluating compatibility with security and monitoring tools used in later phases of the coursework.
+
 7. Administrative Constraints
 This is the list of several administrative constraints that were applied from the beginning of the coursework:
 •	The server operates in a headless configuration with no graphical interface.
@@ -87,8 +91,10 @@ This is the list of several administrative constraints that were applied from th
 •	No graphical management tools are used on the server.
 •	Routine use of the VirtualBox console is avoided.
 These constraints ensure alignment with professional server administration standards and reinforce command-line proficiency.
+
 8. Reflection
 This week highlighted the importance of careful system planning and architectural decision-making. Selecting an appropriate server distribution and workstation environment required balancing usability, security, and performance considerations. Designing the architecture in advance provided a clear roadmap for subsequent weeks, particularly for security hardening and performance evaluation tasks.
+
 9. References 
 [1] Ubuntu, Ubuntu Server Documentation. 
 Link: https://ubuntu.com/server/docs. 
