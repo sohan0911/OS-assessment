@@ -24,7 +24,7 @@ All administrative tasks are performed remotely via Secure Shell (SSH) from the 
 
 ![System architecture diagram](../images/week1/system-architecture.png)
 
-**Figure 1: Dual-system architecture using a host PC and Ubuntu Server LTS (headless).*
+**Figure 1: Dual-system architecture using a host PC and Ubuntu Server LTS (headless).**
 
 The diagram illustrates the separation of responsibilities between the workstation and the server. The workstation initiates SSH connections, runs monitoring scripts, and manages the GitHub Pages technical journal. The Ubuntu Server accepts SSH connections, runs Linux services, and enforces security controls. Both systems communicate through an isolated VirtualBox virtual network.
 
