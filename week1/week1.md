@@ -121,9 +121,11 @@ This week highlighted the importance of careful system planning and architectura
 
 ## 9. References 
 [1] Ubuntu, Ubuntu Server Documentation. 
-Link: https://ubuntu.com/server/docs. 
+Link: https://ubuntu.com/server/docs.
+
 [2] Wikipedia, Deployment Diagram. 
 Link: https://en.wikipedia.org/wiki/Deployment_diagram. 
+
 [3]GeeksforGeeks, How to Draw Architecture Diagrams 
 Link: https://www.geeksforgeeks.org/how-to-draw-architecture-diagrams/
 
