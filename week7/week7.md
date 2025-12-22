@@ -2,29 +2,30 @@
 ### Module: Operating Systems / Systems Administration  
 ### Student: Sohan Giri  
 ### Student ID: A00032373  
-### Date: 2025-12-17  
+### Date: 2025-12-22  
 
 ---
 
 ## 1. Introduction
 
-The purpose of Week 7 was to conduct a comprehensive security audit and overall system evaluation of the Ubuntu Server. This phase aimed to assess the effectiveness of the security controls implemented in previous weeks and to identify any remaining vulnerabilities or risks. Industry-standard auditing tools were used to evaluate system hardening, network exposure, access control, and service configuration.
+The purpose of Week 7 was to conduct a comprehensive security audit and final system evaluation of the Ubuntu Server. This phase focused on verifying that the security controls implemented in earlier weeks remained active, correctly configured, and effective. Rather than introducing additional hardening measures, the emphasis was placed on auditing, validation, and critical evaluation using industry-standard tools.
 
-The findings from this audit provide a final assessment of the system’s security posture and highlight key trade-offs between security, performance, and administrative usability.
+The audit was performed entirely via SSH from the workstation and restricted to the isolated VirtualBox Host-only network, ensuring ethical compliance and alignment with professional system administration practices.
 
 ---
 
 ## 2. Security Audit Methodology
 
-The security audit was conducted using a layered approach combining automated tools, manual verification, and configuration review. All audit activities were performed remotely via SSH from the workstation and confined to the isolated VirtualBox Host-only network to ensure ethical compliance.
-
-The audit focused on the following areas:
+A layered auditing approach was adopted combining automated scanning tools and manual verification. The audit focused on the following areas:
 
 - System hardening and configuration compliance  
-- Network exposure and open services  
-- Authentication and access control  
-- Intrusion detection effectiveness  
-- Residual risks and limitations  
+- Network exposure and firewall effectiveness  
+- SSH authentication and access control  
+- Mandatory access control enforcement  
+- Running service evaluation and justification  
+- Identification of residual risks and trade-offs  
+
+This approach ensures that security decisions are evidence-based and proportionate to the system’s operational context.
 
 ---
 
@@ -32,131 +33,132 @@ The audit focused on the following areas:
 
 ### 3.1 Lynis Scan Execution
 
-![Lynis security audit](../images/week7/lynis-scan.png)
+![Lynis audit summary](../images/week7/lynis-summary.png)
 
-**Figure 7.1:** Execution of the Lynis security audit tool on the Ubuntu Server.
+**Figure 7.1:** Lynis security audit summary showing a hardening index score of 60.
 
-Lynis was used to perform a comprehensive system security audit, analysing configuration files, permissions, services, kernel parameters, and installed software. The scan was executed after all security controls had been implemented to evaluate the final security posture.
+The Lynis audit tool was used to perform a comprehensive security assessment of the Ubuntu Server. The scan evaluated system configuration, installed software, network services, access control mechanisms, and security policies.
+
+The audit produced a **hardening index score of 60**, based on 257 tests performed. This score indicates a moderately hardened system appropriate for a headless Linux server operating in a controlled virtual environment.
 
 ---
 
-### 3.2 Lynis Results and Improvements
+### 3.2 Lynis Findings and Interpretation
 
-The Lynis audit produced a strong overall hardening score, indicating that the majority of recommended security controls were correctly implemented. Improvements over the default installation were observed in the following areas:
+The audit confirmed that several key security controls were correctly implemented, including:
 
-- SSH hardening (key-based authentication, root login disabled)  
-- Firewall configuration with restricted inbound access  
-- Automatic security updates enabled  
-- Intrusion prevention via fail2ban  
+- Active host-based firewall  
+- Hardened SSH configuration  
 - Mandatory access control using AppArmor  
+- Automatic security updates  
+- Minimal installed services  
 
-Several low-risk warnings remained, primarily relating to optional kernel hardening and additional logging recommendations. These were assessed as acceptable trade-offs given the coursework scope and system purpose.
-
----
-
-## 4. Network Security Assessment with nmap
-
-### 4.1 Network Scan Methodology
-
-![nmap scan results](../images/week7/nmap-scan.png)
-
-**Figure 7.2:** nmap scan of the Ubuntu Server from the workstation within the Host-only network.
-
-A network security assessment was performed using `nmap` from the workstation to identify exposed services and verify firewall effectiveness. Scanning was limited to the Host-only network in accordance with ethical guidelines.
+The score reflects a balanced approach to security rather than aggressive enterprise-level hardening, which would be unnecessary for the scope and environment of this system.
 
 ---
 
-### 4.2 nmap Results and Analysis
+## 4. Analysis of Lynis Warnings and Unimplemented Recommendations
 
-The nmap scan confirmed that only **port 22 (SSH)** was open and accessible from the trusted workstation IP address. No additional services or unintended ports were exposed.
+The Lynis audit identified several informational warnings and optional recommendations. These were reviewed individually, and decisions were made based on risk exposure, system purpose, and operational trade-offs.
 
-This result verifies that the UFW firewall rules are correctly enforced and that the server’s network attack surface has been minimised. The absence of unnecessary open ports significantly reduces the risk of remote exploitation.
+### 4.1 Malware Scanner Not Installed
 
----
+Lynis reported that no malware scanning software was installed on the system. This was assessed as acceptable because the server operates within an isolated VirtualBox Host-only network and does not process external file uploads, email traffic, or shared user content. Installing a malware scanner would introduce additional CPU and disk overhead with minimal security benefit in this environment.
 
-## 5. Authentication and Access Control Verification
+### 4.2 DNSSEC Support Status Unknown
 
-### 5.1 SSH Security Verification
+The audit reported DNSSEC support as unknown for the local resolver. The server does not provide DNS services and relies on `systemd-resolved` for basic name resolution. Enabling DNSSEC was deemed unnecessary, as it would not significantly improve security for a server that is not exposed to external DNS-based threats.
 
-Manual verification confirmed that:
+### 4.3 ARP Monitoring Software Not Present
 
-- Password-based SSH authentication is disabled  
-- Root login via SSH is prohibited  
-- Key-based authentication is enforced  
-- SSH access is restricted to a single trusted IP  
+No ARP monitoring software was detected. This was considered acceptable because the system operates on a single-host virtual network with no untrusted devices. The risk of ARP spoofing within this environment is negligible.
 
-These controls collectively protect against brute-force attacks, credential theft, and unauthorised remote access.
+### 4.4 SSH Hardening Suggestions
 
----
+Lynis identified several SSH-related suggestions, including limiting authentication attempts, restricting SSH forwarding features, and explicitly defining allowed users or groups. Core SSH security controls such as disabling root login, enforcing strict file permissions, and disabling password authentication were already correctly implemented. Additional restrictions were not applied to avoid unnecessary complexity and potential usability issues, as firewall rules and fail2ban already provide effective protection against brute-force attacks.
 
-### 5.2 Mandatory Access Control Evaluation
-
-AppArmor profiles were verified to be active and operating in enforce mode for multiple system services. This ensures that even if a service is compromised, its ability to access system resources is strictly limited.
-
-Mandatory access control provides an additional containment layer beyond traditional discretionary permissions, strengthening the system’s defence-in-depth strategy.
+These decisions reflect a considered balance between security, maintainability, and system reliability rather than indiscriminate hardening.
 
 ---
 
-## 6. Service Audit and Justification
+## 5. Network Security Assessment with nmap
 
-A review of all running services was conducted to ensure that only essential services are enabled.
+### 5.1 nmap Scan Execution
 
-The following core services were identified and justified:
+![nmap scan results](../images/week7/nmap.png)
 
-- **OpenSSH Server** – Required for secure remote administration  
-- **systemd services** – Required for core operating system functionality  
-- **fail2ban** – Provides intrusion prevention and log monitoring  
+**Figure 7.2:** nmap scan executed from the Windows workstation against the Ubuntu Server.
 
-No unnecessary or unused services were found to be running. Disabling non-essential services reduces system complexity and further minimises the attack surface.
+A network security scan was performed using nmap from the Windows host workstation to verify firewall effectiveness and service exposure. The scan was restricted to the isolated Host-only network in accordance with ethical guidelines.
 
 ---
 
-## 7. Residual Risk Assessment
+### 5.2 nmap Results and Analysis
 
-Despite strong security controls, some residual risks remain:
+The scan confirmed that **only port 22 (SSH)** was open, with all other TCP ports filtered by the firewall. This verifies that the UFW firewall is correctly enforced and that no unnecessary services are exposed to the network.
 
-- Kernel-level exploits that bypass user-space controls  
-- Zero-day vulnerabilities not yet addressed by updates  
-- Physical access to the host system (outside VM scope)  
-
-These risks are mitigated as far as reasonably possible through timely updates, network isolation, and layered security controls. Completely eliminating all risk is not feasible, but the current configuration significantly reduces the likelihood and impact of compromise.
+Restricting network access to a single essential service significantly reduces the system’s attack surface and aligns with best practices for securing headless Linux servers.
 
 ---
 
-## 8. Overall System Evaluation
+## 6. SSH Security Verification
 
-The final system demonstrates a well-balanced security configuration suitable for a headless Linux server environment. Security hardening measures were applied systematically, verified through automated tools, and supported by manual inspection.
+![SSH configuration verification](../images/week7/ssh-verification.png)
 
-Key trade-offs were observed between:
+**Figure 7.3:** Verification of SSH hardening settings.
 
-- **Security and usability** – Strict SSH controls increase security but require key management  
-- **Security and performance** – Monitoring and intrusion detection introduce minor overhead  
-- **Automation and control** – Automatic updates reduce risk but require trust in update sources  
-
-These trade-offs were carefully managed to maintain system stability while maximising security.
+Manual verification confirmed that password-based SSH authentication and root login remain disabled. Key-based authentication is enforced, ensuring strong protection against brute-force and credential-based attacks. These controls demonstrate that secure remote administration remains correctly configured.
 
 ---
 
-## 9. Reflection
+## 7. Mandatory Access Control Verification (AppArmor)
 
-Week 7 reinforced the importance of auditing and verification in system administration. Implementing security controls alone is insufficient without validation through testing and review. Using tools such as Lynis and nmap provided objective evidence of system hardening, while manual inspection ensured configuration intent matched actual behaviour.
+![AppArmor status output](../images/week7/apparmor.png)
 
-This phase highlighted how operating systems function as integrated systems where security, performance, and usability must be continuously balanced.
+**Figure 7.4:** AppArmor status showing enforced security profiles.
 
----
-
-## 10. Conclusion
-
-Week 7 successfully demonstrated a comprehensive security audit and final system evaluation of the Ubuntu Server. The results confirm that the system is securely configured, resilient against common attack vectors, and aligned with professional best practices.
-
-The audit concludes the coursework by validating earlier implementation decisions and providing evidence-based insight into the effectiveness of operating system security mechanisms.
+AppArmor was verified to be active with multiple profiles operating in enforce mode. Mandatory access control limits the actions that applications can perform even if compromised, providing an additional containment layer beyond traditional discretionary permissions.
 
 ---
 
-## 11. References
+## 8. Service Audit and Justification
 
-[1] CIS, *Lynis – Security Auditing Tool*. [Online]. Available: https://cisofy.com/lynis/. Accessed: 17-Dec-2025.  
+![Running services list](../images/week7/services.png)
 
-[2] nmap, *Network Mapper Documentation*. [Online]. Available: https://nmap.org/docs.html. Accessed: 17-Dec-2025.  
+**Figure 7.5:** List of active system services.
 
-[3] Ubuntu, *Ubuntu Server Security*. [Online]. Available: https://ubuntu.com/security. Accessed: 17-Dec-2025.
+A review of running services confirmed that only essential services are active. These include the OpenSSH server for remote administration, fail2ban for intrusion prevention, and core system services required for operating system functionality. No unnecessary services such as web servers or printer daemons were found to be running, confirming a minimal attack surface.
+
+---
+
+## 9. Residual Risk Assessment
+
+Despite strong security controls, some residual risks remain unavoidable. These include potential kernel-level vulnerabilities, zero-day exploits, and risks associated with physical access to the host system. These risks are mitigated as far as reasonably possible through regular updates, network isolation, and layered security controls.
+
+Complete risk elimination is not feasible; however, the current configuration significantly reduces both the likelihood and potential impact of compromise.
+
+---
+
+## 10. Overall System Evaluation
+
+The final system demonstrates a well-balanced security configuration suitable for a headless Ubuntu Server. Security controls were implemented systematically, verified through auditing tools, and supported by manual inspection. Trade-offs between security, usability, and performance were carefully considered, resulting in a stable and defensible configuration.
+
+This audit confirms that the operating system behaves as an integrated system where security mechanisms, resource management, and administrative practices must be aligned.
+
+---
+
+## 11. Reflection
+
+Week 7 reinforced the importance of verification and critical evaluation in system administration. Implementing security controls alone is insufficient without auditing and validation. Tools such as Lynis and nmap provided objective evidence of system hardening, while manual inspection ensured that configuration intent matched actual behaviour.
+
+This phase highlighted the need to balance security improvements against operational complexity and demonstrated how informed decision-making is central to professional system administration.
+
+---
+
+## 12. References
+
+[1] CISOfy, *Lynis – Security Auditing Tool*. [Online]. Available: https://cisofy.com/lynis/. Accessed: 22-Dec-2025.  
+
+[2] nmap, *Network Mapper Documentation*. [Online]. Available: https://nmap.org/docs.html. Accessed: 22-Dec-2025.  
+
+[3] Ubuntu, *Ubuntu Server Security Documentation*. [Online]. Available: https://ubuntu.com/security. Accessed: 22-Dec-2025.
