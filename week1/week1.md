@@ -24,7 +24,7 @@ All administrative tasks are performed remotely via Secure Shell (SSH) from the 
 
 ![System architecture diagram](../images/week1/system-architecture.png)
 
-Figure 1: Dual-system architecture using a host PC and Ubuntu Server LTS (headless).
+**Figure 1: Dual-system architecture using a host PC and Ubuntu Server LTS (headless).*
 
 The diagram illustrates the separation of responsibilities between the workstation and the server. The workstation initiates SSH connections, runs monitoring scripts, and manages the GitHub Pages technical journal. The Ubuntu Server accepts SSH connections, runs Linux services, and enforces security controls. Both systems communicate through an isolated VirtualBox virtual network.
 
@@ -64,6 +64,7 @@ The use of an isolated network ensures ethical compliance with university polici
 ## 6. Server System Specification (CLI Evidence)
 
 ### 6.0 Remote SSH Access Verification
+
 ![SSH connection verification](../images/week1/ssh-verification.png)
 
 This screenshot demonstrates a successful SSH connection from the Windows host PC to the Ubuntu Server using a non-root user account. The presence of the “sohan@ubuntu-server” prompt confirms authenticated remote access and correct system context. All subsequent administrative commands were executed within this SSH session, enforcing command-line-only administration.
