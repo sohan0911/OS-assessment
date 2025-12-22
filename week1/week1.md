@@ -35,15 +35,16 @@ The diagram illustrates the separation of responsibilities between the workstati
 Chosen Distribution: Ubuntu Server LTS
 Ubuntu Server LTS was selected as the server operating system due to its strong balance of stability, security, and long-term support. The Long-Term Support (LTS) release model provides five years of security updates and maintenance, making it suitable for production-style environments.
 Ubuntu Server includes native support for widely used security tools such as UFW (Uncomplicated Firewall), AppArmor, fail2ban, and automatic security updates. These tools align directly with the security requirements of the coursework and allow for systematic implementation of industry-standard security controls. In addition, Ubuntu Server benefits from extensive official documentation and a large community, which supports efficient troubleshooting and learning.
+While Ubuntu Server LTS prioritises usability and rapid deployment, this comes at the cost of a slightly larger attack surface compared to minimal distributions such as Debian. This trade-off is acceptable for this coursework due to the emphasis on security hardening, monitoring, and real-world administrative tooling
 
 ### 3.2 Comparison with Alternative Distributions
 
-Feature	Ubuntu Server LTS	Debian	Rocky Linux
-Release model	LTS (5 years)	Very conservative	Enterprise-focused
-Ease of use	High	Medium	Medium
-Security frameworks	AppArmor	AppArmor	SELinux
-Community support	Very large	Large	Growing
-
+| Feature              | Ubuntu Server LTS | Debian             | Rocky Linux        |
+|----------------------|-------------------|--------------------|--------------------|
+| Release model        | LTS (5 years)     | Very conservative  | Enterprise-focused |
+| Ease of use          | High              | Medium             | Medium             |
+| Security frameworks  | AppArmor          | AppArmor           | SELinux            |
+| Community support    | Very large        | Large              | Growing            |
 
 ## 4. Workstation Configuration Decision
 
@@ -60,6 +61,23 @@ Using the host PC as the workstation also reflects professional practice, where 
 The workstation and server communicate through an isolated VirtualBox virtual network. This network configuration enables secure SSH communication while ensuring that all security testing and scanning activities remain confined to the local environment.
 
 The use of an isolated network ensures ethical compliance with university policies by preventing interaction with external or university networks during security testing. This configuration also reduces the system’s attack surface and provides a controlled environment for experimenting with firewall rules, intrusion detection mechanisms, and performance testing.
+
+### 5.2 VirtualBox Network Adapter Configuration
+
+The Ubuntu Server virtual machine was configured with two network adapters in VirtualBox to separate internet access from administrative traffic.
+
+- **Adapter 1: NAT**
+  - Purpose: Outbound internet connectivity
+  - Used for system updates and package installation
+  - Assigned IP address: `10.0.2.15/24` (via DHCP)
+
+- **Adapter 2: Host-only Adapter**
+  - Purpose: Secure administrative access from the workstation
+  - Used exclusively for SSH, monitoring, and security testing
+  - Assigned IP address: `192.168.56.101/24`
+
+This dual-adapter configuration separates external network access from internal administrative traffic, reducing the server’s attack surface. It also ensures that all security testing activities, such as port scanning and intrusion detection, are confined to an isolated local environment in accordance with ethical and university guidelines.
+
 
 ## 6. Server System Specification (CLI Evidence)
 
@@ -118,6 +136,8 @@ These constraints ensure alignment with professional server administration stand
 
 ## 8. Reflection
 This week highlighted the importance of careful system planning and architectural decision-making. Selecting an appropriate server distribution and workstation environment required balancing usability, security, and performance considerations. Designing the architecture in advance provided a clear roadmap for subsequent weeks, particularly for security hardening and performance evaluation tasks.
+
+This phase reinforced how operating system choices directly influence security capabilities, administrative overhead, and performance testing flexibility. Early architectural decisions constrained later configuration options, demonstrating the interconnected nature of OS design, security policy, and system performance.
 
 ## 9. References 
 [1] Ubuntu, Ubuntu Server Documentation. 
